@@ -1,0 +1,27 @@
+{
+  "name": "appa",
+  "version": "1.0.0",
+  "description": "a little friend that helps serve your web API services",
+  "main": "index.js",
+  "scripts": {
+    "test": "tape test.js | tap-spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/civicmakerlab/appa.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/civicmakerlab/appa/issues"
+  },
+  "homepage": "https://github.com/civicmakerlab/appa#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "match-routes": "^2.0.0",
+    "request": "^2.60.0",
+    "response": "mikeal/response",
+    "tap-spec": "^4.0.2",
+    "tape": "^4.2.0"
+  }
+}
