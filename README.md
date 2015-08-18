@@ -2,7 +2,7 @@
 
 Build an API service from a collection of modules that each provide a single resource.
 
-![appa](appa.jpg)
+![appa](https://github.com/sethvincent/appa/blob/master/appa.jpg)
 
 ## Warning: what even is this i don't know
 
@@ -32,7 +32,7 @@ I like experiments. That's why.
 
 Also, I really like the `appa` logo. Here it is again in case you missed it:
 
-![appa](appa.jpg)
+![appa](https://github.com/sethvincent/appa/blob/master/appa.jpg)
 
 ## So what is this really?
 

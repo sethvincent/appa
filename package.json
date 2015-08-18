@@ -1,21 +1,21 @@
 {
   "name": "appa",
-  "version": "1.0.0",
-  "description": "a little friend that helps serve your web API services",
+  "version": "1.0.1",
+  "description": "Build an API service from a collection of modules that each provide a single resource.",
   "main": "index.js",
   "scripts": {
     "test": "tape test.js | tap-spec"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/civicmakerlab/appa.git"
+    "url": "git+https://github.com/sethvincent/appa.git"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/civicmakerlab/appa/issues"
+    "url": "https://github.com/sethvincent/appa/issues"
   },
-  "homepage": "https://github.com/civicmakerlab/appa#readme",
+  "homepage": "https://github.com/sethvincent/appa#readme",
   "dependencies": {},
   "devDependencies": {
     "match-routes": "^2.0.0",
