@@ -1,6 +1,6 @@
 {
   "name": "appa",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Build an API service from a collection of modules that each provide a single resource.",
   "main": "index.js",
   "scripts": {
