@@ -45,7 +45,11 @@ module.exports = function createAppa (options) {
   appa.apps = {}
   if (options.apps) {
     options.apps.forEach(function (app) {
-      appa.add(app)
+      if (options.preRendered) {
+        appa.apps[app.name] = app
+      } else {
+        appa.add(app)
+      }
     })
   }
 
