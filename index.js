@@ -1,58 +1,89 @@
-var url = require('url')
+var qs = require('qs')
+var parse = require('body/json')
+var response = require('response')
+var createRouter = require('match-routes')
 
-module.exports = function createAppa (options) {
+/**
+* Create the application. Returns the `app` function that can be passed into `http.createServer`.
+* @name createApp
+* @param {Object} options
+* @param {Function} options.log – a logging function, defaults to `console.log`
+*/
+module.exports = function createApp (options) {
   options = options || {}
-  options.url = options.url ? url.parse(options.url) : url.parse('http://127.0.0.1:4323')
+  var log = options.log || console.log
+  var router = createRouter()
 
-  function appa (req, res) {
-    var keys = Object.keys(appa.apps)
-    var l = keys.length
-    var i = 0
-    for (i; i < l; i++) {
-      if (appa.apps[keys[i]].serve(req, res)) return
-    }
+  /**
+  * The request, response handler that is passed to `http.createServer`, and that
+  * provides methods for your app.
+  * @name app
+  * @param {Object} req – the http request object
+  * @param {Object} res – the http response object
+  */
+  function app (req, res) {
+    if (router.match(req, res)) return
+    else sendError(res, 404, 'Not Found')
   }
 
-  appa.add = function appa_add (createApp) {
-    if (typeof createApp !== 'function') {
-      throw new Error('App error: an app must be a function that returns an object')
-    }
-
-    var app = createApp(appa)
-
-    if (typeof app !== 'object') {
-      throw new Error('App error: an app must be a function that returns an object')
-    }
-
-    if (!app.name || typeof app.name !== 'string') {
-      throw new Error('App error: app must have a name property that is a string')
-    }
-
-    if (!app.serve || typeof app.serve !== 'function') {
-      throw new Error('App error: app must have a serve method')
-    }
-
-    appa.apps[app.name] = app
-  }
-
-  appa.remove = function appa_remove (name) {
-    if (typeof name === 'function') {
-      name = name().name
-    }
-    delete appa.apps[name]
-  }
-
-  appa.apps = {}
-  if (options.apps) {
-    options.apps.forEach(function (app) {
-      if (options.preRendered) {
-        appa.apps[app.name] = app
+  /**
+  * Route handler
+  * @name on
+  * @param {String} pathname – the route for this handler
+  * @param {Function} callback – the route handler
+  */
+  function on (pathname, callback) {
+    return router.on(pathname, function (req, res, context) {
+      log(req.method, req.url)
+      context.query = qs.parse(context.query)
+      if (req.method === 'POST' || req.method === 'PUT' || req.method === 'PATCH') {
+        parse(req, res, function (err, body) {
+          if (err) return sendError(res, 400, 'Bad Request, invalid JSON')
+          context.body = body
+          callback(req, res, context)
+        })
       } else {
-        appa.add(app)
+        callback(req, res, context)
       }
     })
   }
 
-  appa.url = options.url
-  return appa
+  /**
+  * Send a JSON response
+  * @name send
+  * @param {Object} res – the http response object
+  * @param {Number} statusCode – the status code of the response, default is 200
+  * @param {Object} data – the data that will be stringified into JSON
+  */
+  function send (res, statusCode, data) {
+    if (typeof statusCode === 'object') {
+      data = statusCode
+      statusCode = 200
+    }
+
+    log('send', statusCode, data)
+    return response.json(data).status(statusCode).pipe(res)
+  }
+
+  /**
+  * Send a JSON error response
+  * @param {Object} response – the http response object
+  * @param {Number} statusCode – the status code of the response, default is 404
+  * @param {String} message – the message that will be stringified into JSON
+  */
+  function sendError (res, statusCode, message) {
+    if (typeof statusCode === 'object') {
+      message = statusCode
+      statusCode = 404
+    }
+
+    log('sendError', statusCode, message)
+    return send(res, statusCode, { statusCode: statusCode, message: message })
+  }
+
+  app.on = on
+  app.send = send
+  app.error = sendError
+  app.router = router
+  return app
 }

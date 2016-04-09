@@ -1,10 +1,11 @@
 {
   "name": "appa",
-  "version": "1.0.2",
-  "description": "Build an API service from a collection of modules that each provide a single resource.",
+  "version": "2.0.0",
+  "description": "Quickly build micro services.",
   "main": "index.js",
   "scripts": {
-    "test": "tape test.js | tap-spec"
+    "test": "standard && tape test.js | tap-spec",
+    "build:docs": "documentation-readme -s 'API'"
   },
   "repository": {
     "type": "git",
@@ -16,12 +17,18 @@
     "url": "https://github.com/sethvincent/appa/issues"
   },
   "homepage": "https://github.com/sethvincent/appa#readme",
-  "dependencies": {},
-  "devDependencies": {
+  "dependencies": {
+    "body": "^5.1.0",
     "match-routes": "^2.0.0",
-    "request": "^2.60.0",
-    "response": "mikeal/response",
+    "qs": "^6.1.0",
+    "response": "^0.18.0"
+  },
+  "devDependencies": {
+    "documentation-readme": "^2.1.1",
+    "minidocs": "github:freeman-lab/minidocs",
+    "request": "^2.70.0",
+    "standard": "^6.0.8",
     "tap-spec": "^4.0.2",
-    "tape": "^4.2.0"
+    "tape": "^4.5.1"
   }
 }
