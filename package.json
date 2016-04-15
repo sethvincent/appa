@@ -19,6 +19,7 @@
   "homepage": "https://github.com/sethvincent/appa#readme",
   "dependencies": {
     "body": "^5.1.0",
+    "bole": "^2.0.0",
     "match-routes": "^2.0.0",
     "qs": "^6.1.0",
     "response": "^0.18.0"

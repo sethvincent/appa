@@ -9,7 +9,7 @@ function createServer (app) {
 }
 
 test('create a server', function (t) {
-  var app = createApp()
+  var app = createApp({ log: false })
   var server = createServer(app).listen(0, function () {
     t.ok(app)
     server.close()
@@ -19,7 +19,7 @@ test('create a server', function (t) {
 
 test('create a route', function (t) {
   t.plan(6)
-  var app = createApp()
+  var app = createApp({ log: false })
 
   app.on('/', function (req, res, context) {
     t.ok(req)
@@ -40,7 +40,7 @@ test('create a route', function (t) {
 
 test('querystring is parsed', function (t) {
   t.plan(4)
-  var app = createApp()
+  var app = createApp({ log: false })
 
   app.on('/', function (req, res, context) {
     app.send(res, context.query)

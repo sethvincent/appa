@@ -2,16 +2,19 @@ var qs = require('qs')
 var parse = require('body/json')
 var response = require('response')
 var createRouter = require('match-routes')
+var bole = require('bole')
 
 /**
 * Create the application. Returns the `app` function that can be passed into `http.createServer`.
 * @name createApp
 * @param {Object} options
-* @param {Function} options.log – a logging function, defaults to `console.log`
+* @param {Boolean} options.log – whether appa should log using bole. default: true
 */
 module.exports = function createApp (options) {
   options = options || {}
-  var log = options.log || console.log
+  if (options.log !== false) options.log = true
+  var log = bole('appa')
+  bole.output({ stream: options.output || process.stdout, level: 'debug' })
   var router = createRouter()
 
   /**
@@ -22,6 +25,7 @@ module.exports = function createApp (options) {
   * @param {Object} res – the http response object
   */
   function app (req, res) {
+    if (options.log) log.info(req.method, req.url)
     if (router.match(req, res)) return
     else sendError(res, 404, 'Not Found')
   }
@@ -34,10 +38,11 @@ module.exports = function createApp (options) {
   */
   function on (pathname, callback) {
     return router.on(pathname, function (req, res, context) {
-      log(req.method, req.url)
       context.query = qs.parse(context.query)
+      if (options.log) log.info('request context', context)
       if (req.method === 'POST' || req.method === 'PUT' || req.method === 'PATCH') {
         parse(req, res, function (err, body) {
+          if (options.log) log.error('Bad Request, invalid JSON', err)
           if (err) return sendError(res, 400, 'Bad Request, invalid JSON')
           context.body = body
           callback(req, res, context)
@@ -61,7 +66,7 @@ module.exports = function createApp (options) {
       statusCode = 200
     }
 
-    log('send', statusCode, data)
+    if (options.log) log.info('send', statusCode, data)
     return response.json(data).status(statusCode).pipe(res)
   }
 
@@ -77,11 +82,12 @@ module.exports = function createApp (options) {
       statusCode = 404
     }
 
-    log('sendError', statusCode, message)
+    if (options.log) log.info('sendError', statusCode, message)
     return send(res, statusCode, { statusCode: statusCode, message: message })
   }
 
   app.on = on
+  app.log = log
   app.send = send
   app.error = sendError
   app.router = router
