@@ -2,6 +2,7 @@ var qs = require('qs')
 var parse = require('body/json')
 var response = require('response')
 var createRouter = require('match-routes')
+var isType = require('type-is')
 var bole = require('bole')
 
 /**
@@ -41,12 +42,21 @@ module.exports = function createApp (options) {
       context.query = qs.parse(context.query)
       if (options.log) log.info('request context', context)
       if (req.method === 'POST' || req.method === 'PUT' || req.method === 'PATCH') {
-        parse(req, res, function (err, body) {
-          if (options.log) log.error('Bad Request, invalid JSON', err)
-          if (err) return sendError(res, 400, 'Bad Request, invalid JSON')
+        console.log('isType', isType(req, ['json']))
+        if (isType(req, ['json'])) return parse(req, res, handleParse)
+        
+        callback(req, res, context)
+        
+        function handleParse (err, body) {
+          console.log('handleParse')
+          if (err) {
+            if (options.log) log.error('Bad Request, invalid JSON', err)
+            return sendError(res, 400, 'Bad Request, invalid JSON')
+          }
+
           context.body = body
           callback(req, res, context)
-        })
+        }
       } else {
         callback(req, res, context)
       }
