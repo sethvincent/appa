@@ -40,26 +40,24 @@ module.exports = function createApp (options) {
   function on (pathname, callback) {
     return router.on(pathname, function (req, res, context) {
       context.query = qs.parse(context.query)
-      if (options.log) log.info('request context', context)
-      if (req.method === 'POST' || req.method === 'PUT' || req.method === 'PATCH') {
-        console.log('isType', isType(req, ['json']))
-        if (isType(req, ['json'])) return parse(req, res, handleParse)
-        
-        callback(req, res, context)
-        
-        function handleParse (err, body) {
-          console.log('handleParse')
-          if (err) {
-            if (options.log) log.error('Bad Request, invalid JSON', err)
-            return sendError(res, 400, 'Bad Request, invalid JSON')
-          }
 
-          context.body = body
-          callback(req, res, context)
+      function handleParse (err, body) {
+        if (err) {
+          if (options.log) log.error('Bad Request, invalid JSON', err)
+          return sendError(res, 400, 'Bad Request, invalid JSON')
         }
-      } else {
+
+        context.body = body
         callback(req, res, context)
       }
+
+      if (options.log) log.info('request context', context)
+      if (req.method === 'POST' || req.method === 'PUT' || req.method === 'PATCH') {
+        if (isType(req, ['json'])) return parse(req, res, handleParse)
+        return callback(req, res, context)
+      }
+
+      callback(req, res, context)
     })
   }
 
