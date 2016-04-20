@@ -1,6 +1,6 @@
 {
   "name": "appa",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "Quickly build micro services.",
   "main": "index.js",
   "scripts": {
@@ -23,7 +23,8 @@
     "bole": "^2.0.0",
     "match-routes": "^2.0.0",
     "qs": "^6.1.0",
-    "response": "^0.18.0"
+    "response": "^0.18.0",
+    "type-is": "^1.6.12"
   },
   "devDependencies": {
     "documentation-readme": "^2.1.1",
