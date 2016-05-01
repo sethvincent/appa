@@ -28,7 +28,7 @@ module.exports = function createApp (options) {
   function app (req, res) {
     if (options.log) log.info(req.method, req.url)
     if (router.match(req, res)) return
-    else sendError(res, 404, 'Not Found')
+    else error(res, 404, 'Not Found')
   }
 
   /**
@@ -44,7 +44,7 @@ module.exports = function createApp (options) {
       function handleParse (err, body) {
         if (err) {
           if (options.log) log.error('Bad Request, invalid JSON', err)
-          return sendError(res, 400, 'Bad Request, invalid JSON')
+          return error(res, 400, 'Bad Request, invalid JSON')
         }
 
         context.body = body
@@ -84,20 +84,20 @@ module.exports = function createApp (options) {
   * @param {Number} statusCode – the status code of the response, default is 404
   * @param {String} message – the message that will be stringified into JSON
   */
-  function sendError (res, statusCode, message) {
+  function error (res, statusCode, message) {
     if (typeof statusCode === 'object') {
       message = statusCode
       statusCode = 404
     }
 
-    if (options.log) log.info('sendError', statusCode, message)
+    if (options.log) log.info('error', statusCode, message)
     return send(res, statusCode, { statusCode: statusCode, message: message })
   }
 
   app.on = on
   app.log = log
   app.send = send
-  app.error = sendError
+  app.error = error
   app.router = router
   return app
 }
