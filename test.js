@@ -1,6 +1,7 @@
 var test = require('tape')
 var http = require('http')
 var request = require('request')
+var fromString = require('from2-string')
 
 var createApp = require('./index')
 
@@ -44,6 +45,28 @@ test('querystring is parsed', function (t) {
 
   app.on('/', function (req, res, context) {
     app.send(res, context.query)
+  })
+
+  var server = createServer(app).listen(3131, function () {
+    request({ url: 'http://127.0.0.1:3131?hi=hello&hey[wut]=wat', json: true }, function (err, res, body) {
+      t.notOk(err)
+      t.ok(body)
+      t.equal(body.hi, 'hello')
+      t.equal(body.hey.wut, 'wat')
+      server.close()
+    })
+  })
+})
+
+test('pipe a stream', function (t) {
+  t.plan(5)
+  var app = createApp({ log: false })
+
+  app.on('/', function (req, res, context) {
+    var stream = fromString(JSON.stringify(context.query))
+    app.pipe(stream, res, function (err) {
+      t.notOk(err)
+    })
   })
 
   var server = createServer(app).listen(3131, function () {

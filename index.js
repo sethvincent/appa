@@ -3,19 +3,14 @@ var parse = require('body/json')
 var response = require('response')
 var createRouter = require('match-routes')
 var isType = require('type-is')
-var bole = require('bole')
 
 /**
 * Create the application. Returns the `app` function that can be passed into `http.createServer`.
 * @name createApp
 * @param {Object} options
-* @param {Boolean} options.log – whether appa should log using bole. default: true
 */
 module.exports = function createApp (options) {
   options = options || {}
-  if (options.log !== false) options.log = true
-  var log = bole('appa')
-  bole.output({ stream: options.output || process.stdout, level: 'debug' })
   var router = createRouter()
 
   /**
@@ -26,7 +21,6 @@ module.exports = function createApp (options) {
   * @param {Object} res – the http response object
   */
   function app (req, res) {
-    if (options.log) log.info(req.method, req.url)
     if (router.match(req, res)) return
     else error(res, 404, 'Not Found')
   }
@@ -43,7 +37,6 @@ module.exports = function createApp (options) {
 
       function handleParse (err, body) {
         if (err) {
-          if (options.log) log.error('Bad Request, invalid JSON', err)
           return error(res, 400, 'Bad Request, invalid JSON')
         }
 
@@ -51,7 +44,6 @@ module.exports = function createApp (options) {
         callback(req, res, context)
       }
 
-      if (options.log) log.info('request context', context)
       if (req.method === 'POST' || req.method === 'PUT' || req.method === 'PATCH') {
         if (isType(req, ['json'])) return parse(req, res, handleParse)
         return callback(req, res, context)
@@ -74,7 +66,6 @@ module.exports = function createApp (options) {
       statusCode = 200
     }
 
-    if (options.log) log.info('send', statusCode, data)
     return response.json(data).status(statusCode).pipe(res)
   }
 
@@ -90,14 +81,14 @@ module.exports = function createApp (options) {
       statusCode = 404
     }
 
-    if (options.log) log.info('error', statusCode, message)
     return send(res, statusCode, { statusCode: statusCode, message: message })
   }
 
   app.on = on
-  app.log = log
   app.send = send
   app.error = error
   app.router = router
+  app.json = require('JSONStream')
+  app.pipe = require('pump')
   return app
 }

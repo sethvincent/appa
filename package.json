@@ -1,7 +1,7 @@
 {
   "name": "appa",
-  "version": "4.0.0",
-  "description": "Quickly build micro services.",
+  "version": "4.1.0",
+  "description": "Quickly create simple JSON API services.",
   "main": "index.js",
   "scripts": {
     "test": "standard && tape test.js | tap-spec",
@@ -18,18 +18,18 @@
   },
   "homepage": "https://github.com/sethvincent/appa#readme",
   "dependencies": {
+    "JSONStream": "^1.1.2",
     "accepts": "^1.3.2",
     "body": "^5.1.0",
-    "bole": "^2.0.0",
-    "documentation": "github:documentationjs/documentation",
     "match-routes": "^2.0.0",
+    "pump": "^1.0.1",
     "qs": "^6.1.0",
     "response": "^0.18.0",
     "type-is": "^1.6.12"
   },
   "devDependencies": {
     "documentation": "github:documentationjs/documentation",
-    "documentation-readme": "^2.1.1",
+    "from2-string": "^1.1.0",
     "minidocs": "github:freeman-lab/minidocs",
     "request": "^2.70.0",
     "standard": "^6.0.8",
