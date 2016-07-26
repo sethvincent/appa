@@ -10,7 +10,7 @@ function createServer (app) {
 }
 
 test('create a server', function (t) {
-  var app = createApp({ log: false })
+  var app = createApp({ log: { level: 'silent' } })
   var server = createServer(app).listen(0, function () {
     t.ok(app)
     server.close()
@@ -20,7 +20,7 @@ test('create a server', function (t) {
 
 test('create a route', function (t) {
   t.plan(6)
-  var app = createApp({ log: false })
+  var app = createApp({ log: { level: 'silent' } })
 
   app.on('/', function (req, res, context) {
     t.ok(req)
@@ -41,7 +41,7 @@ test('create a route', function (t) {
 
 test('querystring is parsed', function (t) {
   t.plan(4)
-  var app = createApp({ log: false })
+  var app = createApp({ log: { level: 'silent' } })
 
   app.on('/', function (req, res, context) {
     app.send(res, context.query)
@@ -60,7 +60,7 @@ test('querystring is parsed', function (t) {
 
 test('pipe a stream', function (t) {
   t.plan(5)
-  var app = createApp({ log: false })
+  var app = createApp({ log: { level: 'silent' } })
 
   app.on('/', function (req, res, context) {
     var stream = fromString(JSON.stringify(context.query))
@@ -75,6 +75,28 @@ test('pipe a stream', function (t) {
       t.ok(body)
       t.equal(body.hi, 'hello')
       t.equal(body.hey.wut, 'wat')
+      server.close()
+    })
+  })
+})
+
+test('receive params', function (t) {
+  t.plan(7)
+  var app = createApp({ log: { level: 'silent' } })
+
+  app.on('/list/:listkey/item/:itemkey', function (req, res, ctx) {
+    t.ok(ctx.params)
+    t.ok(ctx.params.listkey)
+    t.ok(ctx.params.itemkey)
+    app.send(res, ctx.params)
+  })
+
+  var server = createServer(app).listen(3131, function () {
+    request({ url: 'http://127.0.0.1:3131/list/hello/item/wat', json: true }, function (err, res, body) {
+      t.notOk(err)
+      t.ok(body)
+      t.equal(body.listkey, 'hello')
+      t.equal(body.itemkey, 'wat')
       server.close()
     })
   })

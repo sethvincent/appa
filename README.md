@@ -1,6 +1,6 @@
 # appa
 
-Quickly build micro services.
+Quickly create simple JSON API services.
 
 [![Travis](https://img.shields.io/travis/sethvincent/appa.svg)](https://travis-ci.org/sethvincent/appa)
 [![npm](https://img.shields.io/npm/v/appa.svg)](http://npmjs.com/appa)
@@ -23,7 +23,9 @@ app.on('/', function (req, res, context) {
   app.send(res, { message: 'oh hey friends' })
 })
 
-http.createServer(app).listen(3000)
+http.createServer(app).listen(3000, function () {
+  app.log.info('server started at http://127.0.0.1:3000')
+})
 ```
 
 ## API
@@ -35,11 +37,10 @@ Create the application. Returns the `app` function that can be passed into `http
 **Parameters**
 
 -   `options` **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
-    -   `options.log` **[Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** – whether appa should log using bole. default: true
 
 ### app
 
-The request, response handler that is passed to `http.createServer`, and that
+The request, response handler that is passed to `http.createServer`, and the object that
 provides methods for your app.
 
 **Parameters**
@@ -47,7 +48,7 @@ provides methods for your app.
 -   `req` **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** – the http request object
 -   `res` **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** – the http response object
 
-### on
+### app.on
 
 Route handler
 
@@ -56,9 +57,9 @@ Route handler
 -   `pathname` **[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** – the route for this handler
 -   `callback` **[Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** – the route handler
 
-### send
+### app.send
 
-Send a JSON response
+Send a JSON object as a response
 
 **Parameters**
 
@@ -66,16 +67,28 @@ Send a JSON response
 -   `statusCode` **[Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** – the status code of the response, default is 200
 -   `data` **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** – the data that will be stringified into JSON
 
-### error
+### app.error
 
 Send a JSON error response
 
 **Parameters**
 
 -   `response` **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** – the http response object
--   `res`  
 -   `statusCode` **[Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** – the status code of the response, default is 404
 -   `message` **[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** – the message that will be stringified into JSON
+-   `data` **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** – additional data about the error to send in the response
+
+### app.log
+
+Create logs using the pino module: <https://npmjs.com/pino>
+
+### app.json
+
+Parse or stringify a JSON stream using the JSONStream module: <https://npmjs.com/JSONStream>
+
+### app.pipe
+
+Compose a stream using the pump module: <https://npmjs.com/pump>
 
 ## License
 
