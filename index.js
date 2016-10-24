@@ -1,12 +1,13 @@
 var qs = require('qs')
 var url = require('url')
 var parse = require('body/json')
-var response = require('response')
 var createRouter = require('wayfarer')
 var isType = require('type-is')
-var logger = require('pino')
 var httplogger = require('pino-http')
-var xtend = require('xtend')
+
+var createLogger = require('./log')
+var send = require('./send')
+var error = require('./error')
 
 /**
 * Create the application. Returns the `app` function that can be passed into `http.createServer`.
@@ -18,7 +19,8 @@ module.exports = function createApp (options) {
   options.log = options.log || { level: 'info' }
 
   var router = app.router = createRouter('/404')
-  var log = logger(options.log, options.log.stream)
+
+  var log = createLogger(options.log)
   var httplog = httplogger(options.log, options.log.stream)
 
   // provide a 404 fallback
@@ -69,43 +71,6 @@ module.exports = function createApp (options) {
   }
 
   /**
-  * Send a JSON object as a response
-  * @name app.send
-  * @param {Object} res – the http response object
-  * @param {Number} statusCode – the status code of the response, default is 200
-  * @param {Object} data – the data that will be stringified into JSON
-  */
-  function send (res, statusCode, data) {
-    if (typeof statusCode === 'object') {
-      data = statusCode
-      statusCode = 200
-    }
-
-    return response.json(data).status(statusCode).pipe(res)
-  }
-
-  /**
-  * Send a JSON error response
-  * @name app.error
-  * @param {Object} response – the http response object
-  * @param {Number} statusCode – the status code of the response, default is 404
-  * @param {String} message – the message that will be stringified into JSON
-  * @param {Object} data – additional data about the error to send in the response
-  */
-  function error (res, statusCode, message, data) {
-    if (typeof statusCode === 'string') {
-      data = message
-      message = statusCode
-      statusCode = 404
-    }
-
-    data = data || {}
-    data = xtend(data, { statusCode: statusCode, message: message })
-    log.error(data, message)
-    return send(res, statusCode, data)
-  }
-
-  /**
   * Create logs using the pino module: https://npmjs.com/pino
   * @name app.log
   */
@@ -123,8 +88,25 @@ module.exports = function createApp (options) {
   */
   app.pipe = require('pump')
 
-  app.on = on
+  /**
+  * Send a JSON object as a response
+  * @name app.send
+  * @param {Object} res – the http response object
+  * @param {Number} statusCode – the status code of the response, default is 200
+  * @param {Object} data – the data that will be stringified into JSON
+  */
   app.send = send
+
+  /**
+  * Send a JSON error response
+  * @name app.error
+  * @param {Object} response – the http response object
+  * @param {Number} statusCode – the status code of the response, default is 404
+  * @param {String} message – the message that will be stringified into JSON
+  * @param {Object} data – additional data about the error to send in the response
+  */
   app.error = error
+
+  app.on = on
   return app
 }
