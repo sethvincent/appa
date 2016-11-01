@@ -26,10 +26,10 @@ module.exports = function createApp (options) {
 
   // provide a 404 fallback
   on('/404', (options.notFound || notFound))
-  function notFound (req, res) { error(res, 'Not found') }
+  function notFound (req, res) { error('Not found').pipe(res) }
 
   // ignore favicon.ico requests
-  on('/favicon.ico', function (req, res) { send(res, 200) })
+  on('/favicon.ico', function (req, res) { send(200).pipe(res) })
 
   /**
   * The request, response handler that is passed to `http.createServer`, and the object that
@@ -60,7 +60,7 @@ module.exports = function createApp (options) {
       log.info(ctx)
 
       function handleParse (err, body) {
-        if (err) return error(res, 400, 'Bad Request, invalid JSON')
+        if (err) return error(400, 'Bad Request, invalid JSON').pipe(res)
         ctx.body = body
         callback(req, res, ctx)
       }
@@ -95,19 +95,29 @@ module.exports = function createApp (options) {
   /**
   * Send a JSON object as a response
   * @name app.send
-  * @param {Object} res – the http response object
   * @param {Number} statusCode – the status code of the response, default is 200
   * @param {Object} data – the data that will be stringified into JSON
+  * @example
+  * var send = require('appa/send')
+  *
+  * app.on('/', function (req, res, ctx) {
+  *   send({ message: 'hi' }).pipe(res)
+  * })
   */
   app.send = send
 
   /**
   * Send a JSON error response
   * @name app.error
-  * @param {Object} response – the http response object
   * @param {Number} statusCode – the status code of the response, default is 404
   * @param {String} message – the message that will be stringified into JSON
   * @param {Object} data – additional data about the error to send in the response
+  * @example
+  * var error = require('appa/error')
+  *
+  * app.on('/', function (req, res, ctx) {
+  *   error(404, 'Resource not found').pipe(res)
+  * })
   */
   app.error = error
 

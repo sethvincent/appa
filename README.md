@@ -39,7 +39,7 @@ var send = require('appa/send')
 var log = require('appa/log')()
 
 app.on('/', function (req, res, context) {
-  send(res, { message: 'oh hey friends' })
+  send({ message: 'oh hey friends' }).pipe(res)
 })
 
 http.createServer(app).listen(3000, function () {

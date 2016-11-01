@@ -3,7 +3,8 @@ var http = require('http')
 var request = require('request')
 var fromString = require('from2-string')
 
-var createApp = require('./index')
+var createApp = require('../index')
+var send = require('../send')
 
 function createServer (app) {
   return http.createServer(app)
@@ -26,7 +27,7 @@ test('create a route', function (t) {
     t.ok(req)
     t.ok(res)
     t.ok(context)
-    app.send(res, { hello: 'hi' })
+    send({ hello: 'hi' }).pipe(res)
   })
 
   var server = createServer(app).listen(3131, function () {
@@ -44,7 +45,7 @@ test('querystring is parsed', function (t) {
   var app = createApp({ log: { level: 'silent' } })
 
   app.on('/', function (req, res, context) {
-    app.send(res, context.query)
+    send(context.query).pipe(res)
   })
 
   var server = createServer(app).listen(3131, function () {
@@ -88,7 +89,7 @@ test('receive params', function (t) {
     t.ok(ctx.params)
     t.ok(ctx.params.listkey)
     t.ok(ctx.params.itemkey)
-    app.send(res, ctx.params)
+    send(ctx.params).pipe(res)
   })
 
   var server = createServer(app).listen(3131, function () {

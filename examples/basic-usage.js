@@ -1,10 +1,12 @@
 var http = require('http')
-var app = require('./index')()
+var app = require('../index')()
+var send = require('../send')
+var log = app.log
 
 app.on('/', function (req, res, context) {
-  app.send(res, { message: 'oh hey friends' })
+  send(200, { message: 'oh hey friends' }).pipe(res)
 })
 
 http.createServer(app).listen(3000, function () {
-  app.log.info('server started at http://127.0.0.1:3000')
+  log.info('server started at http://127.0.0.1:3000')
 })
