@@ -8,15 +8,15 @@
     "deps": "dependency-check . && dependency-check . --unused --no-dev",
     "test:node": "tape test.js | tap-spec",
     "test": "npm run lint && npm run deps && npm run test:node",
-    "build:api": "documentation readme -s API",
-    "build": "npm run build:api"
+    "docs:api": "documentation build index.js -f md -o docs/API.md",
+    "build": "npm run docs:api"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sethvincent/appa.git"
   },
   "author": "",
-  "license": "MIT",
+  "license": "ISC",
   "bugs": {
     "url": "https://github.com/sethvincent/appa/issues"
   },

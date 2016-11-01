@@ -1,3 +1,4 @@
+var assert = require('assert')
 var qs = require('qs')
 var url = require('url')
 var parse = require('body/json')
@@ -51,6 +52,9 @@ module.exports = function createApp (options) {
   * @param {Function} callback – the route handler
   */
   function on (pathname, callback) {
+    assert.equal(typeof pathname, 'string', 'appa: pathname is required and must be a string')
+    assert.equal(typeof callback, 'function', 'appa: callback function is required')
+
     return router.on(pathname, function (params, req, res, ctx) {
       ctx.params = params
       log.info(ctx)
