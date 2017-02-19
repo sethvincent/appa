@@ -3,7 +3,7 @@ var app = require('../index')()
 var send = require('../send')
 var log = app.log
 
-app.on('/', function (req, res, context) {
+app.on('/', function (req, res, ctx) {
   send(200, { message: 'oh hey friends' }).pipe(res)
 })
 

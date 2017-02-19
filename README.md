@@ -36,7 +36,7 @@ npm install --save appa
 var http = require('http')
 var app = require('appa')()
 var send = require('appa/send')
-var log = require('appa/log')()
+var log = app.log
 
 app.on('/', function (req, res, context) {
   send({ message: 'oh hey friends' }).pipe(res)
@@ -55,6 +55,7 @@ http.createServer(app).listen(3000, function () {
 
 ### Examples
 - [Basic example](examples/basic.js)
+- Example [server](examples/server.js) and [client](examples/client.js)
 
 ## Contributing
 
@@ -70,7 +71,6 @@ Read about the changes to this project in [CHANGELOG.md](CHANGELOG.md). The form
 
 ## Contact
 
-- **chat** – You can chat about this project at []()
 - **issues** – Please open issues in the [issues queue](https://github.com/sethvincent/appa/issues)
 - **twitter** – Have a question? [@sethdvincent](https://twitter.com/sethdvincent)
 - **email** – Need in-depth support via paid contract? Send an email to sethvincent@gmail.com

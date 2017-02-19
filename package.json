@@ -23,11 +23,11 @@
   "homepage": "https://github.com/sethvincent/appa#readme",
   "dependencies": {
     "JSONStream": "^1.1.2",
-    "body": "^5.1.0",
     "pino": "^2.7.5",
     "pino-http": "^1.0.8",
     "pump": "^1.0.1",
     "qs": "^6.1.0",
+    "raw-body": "^2.2.0",
     "response": "^0.18.0",
     "type-is": "^1.6.12",
     "wayfarer": "^6.1.5",
@@ -35,10 +35,9 @@
   },
   "devDependencies": {
     "dependency-check": "^2.5.3",
-    "documentation": "github:documentationjs/documentation",
+    "documentation": "^4.0.0-beta.18",
     "from2-string": "^1.1.0",
-    "minidocs": "github:freeman-lab/minidocs",
-    "request": "^2.70.0",
+    "request": "^2.79.0",
     "standard": "^6.0.8",
     "tap-spec": "^4.0.2",
     "tape": "^4.5.1"
