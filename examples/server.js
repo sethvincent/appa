@@ -6,7 +6,6 @@ var log = app.log
 
 app.on('/', function (req, res, ctx) {
   if (req.method === 'POST') {
-    console.log(ctx.body)
     return send(200, ctx.body).pipe(res)
   } else if (req.method === 'GET') {
     return send(200, { message: 'oh hey friends' }).pipe(res)
