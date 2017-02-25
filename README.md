@@ -18,10 +18,6 @@ Quickly create simple JSON API services.
 
 ![appa](https://raw.githubusercontent.com/sethvincent/appa/master/appa.jpg)
 
-## About
-
-
-
 ## Install
 
 Make sure you've got [node installed](http://nodejs.org), then make `appa` a project dependency:
@@ -47,9 +43,41 @@ http.createServer(app).listen(3000, function () {
 })
 ```
 
+## Error handling
+
+Any uncaught errors that occur in a request handler will be caught and a `500 Internal server error` response will be sent.
+
+Send error responses using the `appa/error` module:
+
+```js
+var error = require('appa/error')
+
+module.exports = function (req, res, ctx) {
+  return error(404, 'Not found').pipe(res)
+}
+```
+
+Sending an error response does not automatically log the error, so to add that you can do something like:
+
+```js
+var error = require('appa/error')
+var log = require('appa/log')()
+
+module.exports = function (req, res, ctx) {
+  log.error(req.method, '500', errorStack)
+  return error(500, 'Internal server error').pipe(res)
+}
+```
+
+## Logging
+
+appa uses [pino](https://npmjs.com/pino) for logging. Pass options to pino with `options.log`: `appa({ log: pinoOptions })`.
+
+See [example pino usage](https://github.com/pinojs/pino#usage) and [all pino options](https://github.com/pinojs/pino/blob/master/docs/API.md#pinooptions-stream).
+
+Or disable logging completely by setting `options.log` to `false`: `appa({ log: false })`.
+
 ## Documentation
-- [Getting started](docs/getting-started.md)
-- [Related modules](docs/related-modules.md)
 - [API](docs/api.md)
 - [Tests](tests/)
 

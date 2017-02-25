@@ -15,7 +15,7 @@ npm test
 
 `npm test` runs both the linter and the tests.
 
-### Just run the linter
+### Only run the linter
 
 ```sh
 npm run lint
@@ -24,5 +24,5 @@ npm run lint
 ### Only run the tests
 
 ```sh
-npm run test:no-lint
+npm run test:node
 ```

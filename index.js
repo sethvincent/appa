@@ -93,6 +93,14 @@ module.exports = function createApp (config) {
       ctx.params = params
       log.info(ctx)
 
+      function respond (req, res, ctx) {
+        try {
+          return callback(req, res, ctx)
+        } catch (e) {
+          return error(500, 'Internal server error', e).pipe(res)
+        }
+      }
+
       if (req.method === 'POST' || req.method === 'PUT' || req.method === 'PATCH') {
         body(req, options, function (err, result) {
           if (err) return error(err.status, err.type).pipe(res)
@@ -103,11 +111,11 @@ module.exports = function createApp (config) {
             ctx.body = result
           }
 
-          return callback(req, res, ctx)
+          return respond(req, res, ctx)
         })
       }
 
-      return callback(req, res, ctx)
+      return respond(req, res, ctx)
     })
   }
 

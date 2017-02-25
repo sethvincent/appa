@@ -8,7 +8,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 > Note: unreleased changes are listed here
 
-## 6.1.0 - 2016-02-19
+## 6.1.1 - 2017-02-25
+
+## Fixed
+
+- uncaught errors inside request handlers are now caught and a `500 Internal server error` response is sent
+- Added docs to readme about error handling and logging
+- update tests/README.md
+
+## 6.1.0 - 2017-02-19
 
 ## Added
 - disable logging with `var app = appa({ logging: false })`

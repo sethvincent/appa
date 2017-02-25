@@ -102,3 +102,22 @@ test('receive params', function (t) {
     })
   })
 })
+
+test('handle internal errors', function (t) {
+  t.plan(4)
+  var app = createApp({ log: false })
+
+  app.on('/error', function (req, res, ctx) {
+    throw new Error('oops')
+  })
+
+  var server = createServer(app).listen(3131, function () {
+    request({ url: 'http://127.0.0.1:3131/error', json: true }, function (err, res, body) {
+      t.notOk(err)
+      t.equal(res.statusCode, 500)
+      t.equal(body.statusCode, 500)
+      t.equal(body.message, 'Internal server error')
+      server.close()
+    })
+  })
+})
