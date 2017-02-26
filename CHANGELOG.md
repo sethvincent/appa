@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 > Note: unreleased changes are listed here
 
+## 6.1.2 - 2017-02-25
+
+## Fixed
+
+- fix double response bug
+
 ## 6.1.1 - 2017-02-25
 
 ## Fixed

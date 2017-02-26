@@ -113,9 +113,9 @@ module.exports = function createApp (config) {
 
           return respond(req, res, ctx)
         })
+      } else {
+        return respond(req, res, ctx)
       }
-
-      return respond(req, res, ctx)
     })
   }
 
