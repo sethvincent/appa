@@ -70,7 +70,7 @@ module.exports = function createApp (config) {
   * @name app.on
   * @param {String} pathname – the route for this handler
   * @param {Object} options – options for the request handler
-  * @param {Boolean} options.parseJSON – optionally disable JSON parsing of the body. Default: `true`
+  * @param {Boolean} options.parse – optionally disable parsing of the body. Default: `true`
   * @param {Function} callback – the route handler
   * @example
   * app.on('/', function (req, res, ctx) {
@@ -87,11 +87,25 @@ module.exports = function createApp (config) {
     assert.equal(typeof options, 'object', 'appa: options must be an object')
     assert.equal(typeof callback, 'function', 'appa: callback function is required')
 
-    options.parseJSON = options.parseJSON === false ? options.parseJSON : true
+    options.parse = options.parse === false ? options.parse : true
 
     return router.on(pathname, function (params, req, res, ctx) {
       ctx.params = params
       log.info(ctx)
+
+      function parse (req, options) {
+        body(req, options, function (err, result) {
+          if (err) return error(err.status, err.type).pipe(res)
+
+          if (isType(req, ['json'])) {
+            ctx.body = parseJSON(res, result)
+          } else {
+            ctx.body = result
+          }
+
+          return respond(req, res, ctx)
+        })
+      }
 
       function respond (req, res, ctx) {
         try {
@@ -102,20 +116,11 @@ module.exports = function createApp (config) {
       }
 
       if (req.method === 'POST' || req.method === 'PUT' || req.method === 'PATCH') {
-        body(req, options, function (err, result) {
-          if (err) return error(err.status, err.type).pipe(res)
-
-          if (isType(req, ['json']) && options.parseJSON) {
-            ctx.body = parseJSON(res, result)
-          } else {
-            ctx.body = result
-          }
-
-          return respond(req, res, ctx)
-        })
-      } else {
-        return respond(req, res, ctx)
+        if (options.parse === false) return respond(req, res, ctx)
+        return parse(req, options)
       }
+
+      return respond(req, res, ctx)
     })
   }
 

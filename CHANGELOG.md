@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 > Note: unreleased changes are listed here
 
+## 6.1.3 - 2017-07-02
+
+## Fixed
+
+- make it possible to skip body parsing with `{ parse: false }` option
+
 ## 6.1.2 - 2017-02-25
 
 ## Fixed
