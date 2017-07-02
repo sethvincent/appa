@@ -1,6 +1,6 @@
 {
   "name": "appa",
-  "version": "6.1.2",
+  "version": "6.1.3",
   "description": "Quickly create simple JSON API services.",
   "main": "index.js",
   "scripts": {
